@@ -23,7 +23,7 @@ namespace WebApplication1
     public class WebService1 :System.Web.Services.WebService
     {
         [WebMethod()]
-        public  List<Purchase> ListOfPurchase()
+        public static string  ListOfPurchase()
         {
 
             DataContext db = new DataContext("Database=PurchaseDB;Server=DESKTOP-6GQP7S7\\SQLEXPRESS;Integrated Security=SSPI");
@@ -40,9 +40,10 @@ namespace WebApplication1
             IQueryable<Purchase> purchaseQuery =
                 from purch  in Purchase
                 select purch;
-            
+            var json = new Object();
             foreach (Purchase purch in purchaseQuery)
             {
+                json= new JavaScriptSerializer().Serialize(purch);
                 result.Add(purch);
 
 
@@ -50,12 +51,12 @@ namespace WebApplication1
 
             // Prevent console window from closing.
 
-            return result;
+            return result.ToJSON();
 
         }
         [WebMethod()]
         [ScriptMethod(ResponseFormat = ResponseFormat.Json)]//Specify return format.
-        public  string ListOfInventory()
+        public  static string ListOfInventory()
         {
 
             DataContext db1 = new DataContext("Database=InventoryDB;Server=DESKTOP-6GQP7S7\\SQLEXPRESS;Integrated Security=SSPI");
@@ -86,44 +87,42 @@ namespace WebApplication1
 
         }
         [WebMethod()]
-        public  List<Detector> ListOfDetector()
+        [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
+        public  static string ListOfDetector()
         {
 
-            DataContext db = new DataContext("Database=STOREDB;Server=DESKTOP-6GQP7S7\\SQLEXPRESS;Integrated Security=SSPI");
+            DataContext db = new DataContext("Database=InventoryDB;Server=DESKTOP-6GQP7S7\\SQLEXPRESS;Integrated Security=SSPI");
 
-            List<Detector> result = new List<Detector>();
+            List<Object> result = new List<Object>();
             // Get a typed table to run queries.
             Table<Detector> Detector = db.GetTable<Detector>();
-
-
-            // Attach the log to show generated SQL.
-            db.Log = Console.Out;
 
             // Query for customers in London.
             IQueryable<Detector> DetectorQuery =
                 from x in Detector
                 select x;
+            var json = new Object();
             foreach (Detector x in DetectorQuery)
             {
-                result.Add(x);
+                json = new JavaScriptSerializer().Serialize(x);
+                result.Add(json);
 
-                Console.WriteLine("ID={0}, City={1}", x.ProductID,
-                    x.DetectorA);
+
             }
 
-            // Prevent console window from closing.
-            Console.ReadLine();
+   
 
-            return result;
+            return result.ToJSON();
 
         }
         [System.Web.Services.WebMethod()]
-        public  List<Sales> ListOfSales()
+        [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
+        public static string ListOfSales()
         {
 
-            DataContext db = new DataContext("Database=STOREDB;Server=DESKTOP-6GQP7S7\\SQLEXPRESS;Integrated Security=SSPI");
+            DataContext db = new DataContext("Database=SalesDB;Server=DESKTOP-6GQP7S7\\SQLEXPRESS;Integrated Security=SSPI");
 
-            List<Sales> result = new List<Sales>();
+            List<Object> result = new List<Object>();
             // Get a typed table to run queries.
             Table<Sales> Sales = db.GetTable<Sales>();
 
@@ -135,23 +134,24 @@ namespace WebApplication1
             IQueryable<Sales> SalesQuery =
                 from x in Sales
                 select x;
+            var json = new Object();
             foreach (Sales x in SalesQuery)
             {
-                result.Add(x);
+                json = new JavaScriptSerializer().Serialize(x);
+                result.Add(json);
 
-                Console.WriteLine("ID={0}, City={1}", x.ProductID,
-                    x.InvoiceNo);
+               
             }
 
             // Prevent console window from closing.
             Console.ReadLine();
 
-            return result;
+            return result.ToJSON();
 
         }
 
         [System.Web.Services.WebMethod()]
-        public  List<SalesDetail> ListOfSalesDetail()
+        public  static string ListOfSalesDetail()
         {
 
             DataContext db = new DataContext("Database=STOREDB;Server=DESKTOP-6GQP7S7\\SQLEXPRESS;Integrated Security=SSPI");
@@ -179,7 +179,7 @@ namespace WebApplication1
             // Prevent console window from closing.
             Console.ReadLine();
 
-            return result;
+            return result.ToJSON();
 
         }
 
